@@ -1,0 +1,74 @@
+{
+  "batch_id": "sample-delivery",
+  "tables": {
+    "packaging": [
+      {
+        "pack_id": "pack-v1",
+        "sku": "book",
+        "pieces_per_box": "12"
+      },
+      {
+        "pack_id": "pack-v2",
+        "sku": "book",
+        "pieces_per_box": "10"
+      }
+    ],
+    "order_lines": [
+      {
+        "line_id": "l1",
+        "sku": "book",
+        "pack_id": "pack-v1",
+        "quantity": "2",
+        "unit": "box",
+        "amount": "120",
+        "promised_at": "2026-11-15T12:00:00Z"
+      }
+    ],
+    "shipments": [
+      {
+        "shipment_id": "s1",
+        "line_id": "l1",
+        "occurred_at": "2026-11-09T12:00:00Z",
+        "quantity": "12",
+        "unit": "piece"
+      }
+    ],
+    "receipts_business": [
+      {
+        "receipt_id": "r1",
+        "shipment_id": "s1",
+        "occurred_at": "2026-11-11T12:00:00Z",
+        "quantity": "7",
+        "unit": "piece"
+      }
+    ],
+    "cancellations": [
+      {
+        "cancel_id": "c1",
+        "line_id": "l1",
+        "occurred_at": "2026-11-10T12:00:00Z",
+        "quantity": "1",
+        "unit": "box",
+        "phase": "unshipped"
+      }
+    ],
+    "returns": [
+      {
+        "return_id": "rt1",
+        "shipment_id": "s1",
+        "occurred_at": "2026-11-12T12:00:00Z",
+        "quantity": "3",
+        "unit": "piece",
+        "phase": "requested"
+      },
+      {
+        "return_id": "rt2",
+        "shipment_id": "s1",
+        "occurred_at": "2026-11-13T12:00:00Z",
+        "quantity": "2",
+        "unit": "piece",
+        "phase": "received"
+      }
+    ]
+  }
+}

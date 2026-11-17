@@ -1,0 +1,1 @@
+duckdb==1.4.3 --hash=sha256:a7c864df027da1ee95f0c32def67e15d02cd4a906c9c1cbae82c09c5112f526b
