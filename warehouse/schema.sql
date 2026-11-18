@@ -7,4 +7,4 @@ CREATE TABLE IF NOT EXISTS source_rows(table_name VARCHAR, row_key VARCHAR, payl
         CREATE TABLE IF NOT EXISTS cancellations(cancel_id VARCHAR PRIMARY KEY, line_id VARCHAR, occurred_at VARCHAR, quantity DECIMAL(18,4), unit VARCHAR, phase VARCHAR);
         CREATE TABLE IF NOT EXISTS returns(return_id VARCHAR PRIMARY KEY, shipment_id VARCHAR, occurred_at VARCHAR, quantity DECIMAL(18,4), unit VARCHAR, phase VARCHAR);
 
-CREATE TABLE IF NOT EXISTS dispatch_issues(issue_id VARCHAR PRIMARY KEY, entity_kind VARCHAR, entity_id VARCHAR, reason VARCHAR);
+CREATE TABLE IF NOT EXISTS dispatch_issues(issue_id VARCHAR PRIMARY KEY, entity_kind VARCHAR, entity_id VARCHAR, payload VARCHAR, reason VARCHAR);

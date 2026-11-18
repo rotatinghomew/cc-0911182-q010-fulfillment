@@ -8,6 +8,13 @@ def text(value):
     return value
 
 
+def exact(value):
+    '''文本型业务字段原样保留，便于以稳定业务引用回查。'''
+    if not isinstance(value, str):
+        raise ValueError('文本字段必须为字符串')
+    return value
+
+
 def number(value, nonnegative=False):
     if isinstance(value, bool):
         raise ValueError('布尔值不是数量')

@@ -10,6 +10,12 @@ def open_store(path):
     connection = duckdb.connect(str(path))
     connection.execute("SET threads=1")
     connection.execute(Path(__file__).with_name('schema.sql').read_text())
+    # 既有仓库只补列，不重建表，已登记的异常与业务事实保持原样。
+    columns = {row[0] for row in connection.execute(
+        "SELECT column_name FROM information_schema.columns "
+        "WHERE table_name='dispatch_issues'").fetchall()}
+    if 'payload' not in columns:
+        connection.execute('ALTER TABLE dispatch_issues ADD COLUMN payload VARCHAR')
     return connection
 
 

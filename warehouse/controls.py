@@ -1,25 +1,22 @@
-from decimal import Decimal
-from .facts import order_facts,shipment_facts,receipt_facts
-from .storage import digest,transaction
+from .build import decimal_text, order_snapshot
+from .storage import canonical, digest, transaction
 
 
 def inspect(connection):
-    issues=[]
-    orders={row['line_id']:row for row in order_facts(connection)}
-    shipped={}
-    for row in shipment_facts(connection):
-        if row['issue']:
-            issues.append({'kind':'shipment','id':row['shipment_id'],'reason':row['issue']})
-        else:
-            shipped[row['line_id']]=shipped.get(row['line_id'],Decimal(0))+row['pieces']
-    for line,quantity in shipped.items():
-        if quantity>orders[line]['ordered_pieces']:
-            issues.append({'kind':'order','id':line,'reason':'累计发运超过订单数量'})
-    for row in receipt_facts(connection):
-        if row['issue']:
-            issues.append({'kind':'receipt','id':row['receipt_id'],'reason':row['issue']})
+    '''
+
+    把累积快照发现的阻塞原因和数量差异登记为当前异常。
+    每条异常保留来源单据引用；不改变任何独立事实表的行。
+    '''
+    snapshot = order_snapshot(connection)
     with transaction(connection):
         connection.execute('DELETE FROM dispatch_issues')
-        for issue in issues:
-            connection.execute('INSERT INTO dispatch_issues VALUES (?,?,?,?)',[digest(issue),issue['kind'],issue['id'],issue['reason']])
-    return issues
+        for issue in snapshot['issues']:
+            payload = {'kind':issue['kind'],'id':issue['id'],'line_id':issue['line_id'],
+                       'reason':issue['reason'],
+                       'recorded_pieces':decimal_text(issue['recorded_pieces']),
+                       'applied_pieces':decimal_text(issue['applied_pieces'])}
+            connection.execute('INSERT INTO dispatch_issues VALUES (?,?,?,?,?)',
+                               [digest(payload),issue['kind'],issue['id'],
+                                canonical(payload),issue['reason']])
+    return snapshot['issues']
